@@ -1,0 +1,317 @@
+import random
+import sys
+import time
+import math
+from tkinter import *
+import numpy as np
+import datetime
+
+
+def ger(a, b, c):
+    p = (a + b + c)/2
+    return (p*(p - a)*(p - b)*(p - c))**0.5
+
+
+def in_out():
+    a = list(map(int, open('Coorde').read().split()))
+    if abs(ger(((a[0] - a[2])**2 + (a[1] - a[3])**2)**0.5, ((a[2] - a[4])**2 + (a[5] - a[3])**2)**0.5, ((a[0] - a[4])**2 + (a[1] - a[5])**2)**0.5) \
+            - ger(((a[0] - a[2])**2 + (a[1] - a[3])**2)**0.5, ((a[2] - a[6])**2 + (a[3] - a[7])**2)**0.5, ((a[6] - a[0])**2 + (a[7] - a[1])**2)**0.5)\
+            - ger(((a[6] - a[2])**2 + (a[7] - a[3])**2)**0.5, ((a[2] - a[4])**2 + (a[5] - a[3])**2)**0.5, ((a[6] - a[4])**2 + (a[7] - a[5])**2)**0.5)\
+            - ger(((a[0] - a[6])**2 + (a[1] - a[7])**2)**0.5, ((a[6] - a[4])**2 + (a[5] - a[7])**2)**0.5, ((a[0] - a[4])**2 + (a[1] - a[5])**2)**0.5)) <= 0.0001:
+        return True
+    else:
+        return False
+
+
+def main():
+    a = list(map(int, open('Coorde').read().split()))
+    window = Tk()
+    c = Canvas(window)
+    if in_out():
+        c.create_polygon(a[0], a[1], a[2], a[3], a[4], a[5], fill='red', outline="yellow")
+    else:
+        c.create_polygon(a[0], a[1], a[2], a[3], a[4], a[5], fill='white', outline="yellow")
+    c.create_oval(a[6] - 1, a[7] - 1, a[6] + 1, a[7] + 1, fill='blue')
+    c.grid()
+    window.mainloop()
+
+
+def task_42():
+    a = [500, 200, 650, 350, 500, 500, 350, 350]
+    b = ['red', 'orange', 'yellow', 'green', 'lightBlue', 'blue', 'violet']
+    window = Tk()
+    window.geometry()
+    c = Canvas(width=1000, height=700)
+    c.grid()
+    k0, k1 = abs(a[0] - a[2]), abs(a[1] - a[3])
+    for i in range(100):
+        c.create_line(a[:4], fill=b[i % 7])
+        c.create_line(a[2:6], fill=b[i % 7])
+        c.create_line(a[4:], fill=b[i % 7])
+        c.create_line(a[6], a[7], a[0], a[1], fill=b[i % 7])
+        window.update()
+        time.sleep(0.05)
+        if a[0] < a[2]:
+            a[0] += 0.05*k0
+            a[3] += 0.05*k0
+            a[4] -= 0.05*k0
+            a[7] -= 0.05*k0
+        else:
+            a[0] -= 0.05*k0
+            a[3] -= 0.05*k0
+            a[4] += 0.05*k0
+            a[7] += 0.05*k0
+        if a[1] < a[3]:
+            a[1] += 0.05*k1
+            a[2] -= 0.05*k1
+            a[5] -= 0.05*k1
+            a[6] += 0.05*k1
+        else:
+            a[1] -= 0.05*k1
+            a[2] += 0.05*k1
+            a[5] += 0.05*k1
+            a[6] -= 0.05*k1
+        k0, k1 = abs(a[0] - a[2]), abs(a[1] - a[3])
+    window.mainloop()
+
+
+def task_43():
+    window = Tk()
+    window.geometry('500x500')
+    c = Canvas(width=500, height=500)
+    c.grid()
+    x = 1
+    y = 2
+    x_1 = 1
+    y_1 = 2
+    x_2 = -1
+    y_2 = 2
+    rect = c.create_rectangle(100, 100, 300, 300)
+    oval_1 = c.create_oval(105, 105, 125, 125)
+    oval_2 = c.create_oval(205, 105, 225, 125)
+    while True:
+        a = c.coords(rect)
+        b = c.coords(oval_1)
+        d = c.coords(oval_2)
+        if 0 == a[1] or a[1] == 300:
+            y *= -1
+        if 0 == a[0] or a[0] == 300:
+            x *= -1
+        if abs(a[0] - b[0]) < abs(x_1) or abs(a[2] - b[2]) < abs(x_1):
+            x_1 *= -1
+        if abs(a[1] - b[1]) < abs(y_1) or abs(a[3] - b[3]) < abs(y_1):
+            y_1 *= -1
+        if abs(a[0] - d[0]) < abs(x_2) or abs(a[2] - d[2]) < abs(x_2):
+            x_2 *= -1
+        if abs(a[1] - d[1]) < abs(y_2) or abs(a[3] - d[3]) < abs(y_2):
+            y_2 *= -1
+        if ((b[0] - d[0])**2 + (b[1] - d[1])**2)**0.5 - 20 < x_1 or ((b[0] - d[0])**2 + (b[1] - d[1])**2)**0.5 - 20 < y_1 or ((b[0] - d[0])**2 + (b[1] - d[1])**2)**0.5 - 20 < x_2 or ((b[0] - d[0])**2 + (b[1] - d[1])**2)**0.5 - 20 < y_2:
+            x_1, y_1, x_2, y_2 = x_2, y_2, x_1, y_1
+        c.move(rect, x, y)
+        c.move(oval_1, x + x_1, y + y_1)
+        c.move(oval_2, x + x_2, y + y_2)
+        time.sleep(0.01)
+        window.update()
+
+
+def task_44():
+    window = Tk()
+    c = Canvas(width=500, height=500)
+    c.grid()
+    x = 250
+    y = 250
+    a = np.linspace(-2*np.pi, 2*np.pi, 100)
+    b = np.linspace(75, 75, 100)
+    ball_1 = c.create_oval(x + 75, y, x + 75 + 4, y + 4, width=2, fill='black')
+    ball_2 = c.create_oval(x + 75 + 25, y, x + 75 + 25 + 2, y + 2, width=1, fill='black')
+    l = np.linspace(-4*np.pi, 4*np.pi, 100)
+    c.create_oval(225, 225, 275, 275, fill='yellow')
+    for i, j, k in zip(a, b, l):
+        c.delete(ball_1, ball_2)
+        x = 250 + j*np.cos(i)
+        y = 250 + j*np.sin(i)
+        x1 = x + 25*np.cos(k)
+        y1 = y + 25*np.sin(k)
+        ball_1 = c.create_oval(x, y, x + 4, y + 4, width=1, fill='black')
+        ball_2 = c.create_oval(x1, y1, x1 + 2, y1 + 2, width=1, fill='black')
+        time.sleep(0.01)
+        window.update()
+    window.mainloop()
+
+
+def task_47():
+    root = Tk()
+    n = 15
+    c = Canvas(width=600, height=600)
+    c.grid()
+    k = 50
+    b = 2*np.pi/n
+    a = np.linspace(0, b, k)
+    x = 300
+    y = 160
+    x1 = 300
+    y1 = 450
+    e = []
+    for i in range(n):
+        e += [x + 150*np.cos(b*i), y + 150*np.sin(b*i)]
+    c.create_polygon(e, fill='white', outline='black')
+    j = 0
+    while True:
+        e = []
+        for i in range(n):
+            e += [x + 150*np.cos(b*i + a[j % k]), y + 150*np.sin(b*i + a[j % k])]
+        c.delete('all')
+        c.create_polygon(e, fill='white', outline='black')
+        for i in range(0, n):
+            c.create_polygon(e[(2*i + 2) % len(e)], e[(2*i + 1 + 2) % len(e)],
+                             e[(2*i + 2 + 2) % len(e)], e[(2*i + 3 + 2) % len(e)],
+                             x1, y1,
+                             fill='white',
+                             outline='black')
+        root.update()
+        time.sleep(0.01)
+        j += 1
+        if j == k:
+            j = 0
+    # c.create_polygon(300, 100, 50, 475, 550, 475)
+    # c.create_rectangle(10, 10, 100, 50)
+
+
+def task_48():
+    window = Tk()
+    c = Canvas(width=600, height=600, background='#858585')
+    c.grid()
+    c.create_oval(75, 75, 525, 525, fill='black')
+    c.create_text(300, 100, text='12', fill='white', font=('Calibri, 20'))
+    c.create_text(500, 300, text='3', fill='white', font=('Calibri, 20'))
+    c.create_text(300, 500, text='6', fill='white', font=('Calibri, 20'))
+    c.create_text(100, 300, text='9', fill='white', font=('Calibri, 20'))
+    c.create_line(300 + np.cos(np.pi/3)*190, 300 - np.sin(np.pi/3)*190,
+                  300 + np.cos(np.pi/3)*210, 300 - np.sin(np.pi/3)*210,
+                  width=1, fill='white')
+    c.create_line(300 + np.cos(np.pi/6)*190, 300 - np.sin(np.pi/6)*190,
+                  300 + np.cos(np.pi/6)*210, 300 - np.sin(np.pi/6)*210,
+                  width=1, fill='white')
+    c.create_line(300 - np.cos(np.pi/3)*190, 300 + np.sin(np.pi/3)*190,
+                  300 - np.cos(np.pi/3)*210, 300 + np.sin(np.pi/3)*210,
+                  width=1, fill='white')
+    c.create_line(300 - np.cos(np.pi/6)*190, 300 + np.sin(np.pi/6)*190,
+                  300 - np.cos(np.pi/6)*210, 300 + np.sin(np.pi/6)*210,
+                  width=1, fill='white')
+    c.create_line(300 + np.cos(np.pi/3)*190, 300 + np.sin(np.pi/3)*190,
+                  300 + np.cos(np.pi/3)*210, 300 + np.sin(np.pi/3)*210,
+                  width=1, fill='white')
+    c.create_line(300 + np.cos(np.pi/6)*190, 300 + np.sin(np.pi/6)*190,
+                  300 + np.cos(np.pi/6)*210, 300 + np.sin(np.pi/6)*210,
+                  width=1, fill='white')
+    c.create_line(300 - np.cos(np.pi/3)*190, 300 - np.sin(np.pi/3)*190,
+                  300 - np.cos(np.pi/3)*210, 300 - np.sin(np.pi/3)*210,
+                  width=1, fill='white')
+    c.create_line(300 - np.cos(np.pi/6)*190, 300 - np.sin(np.pi/6)*190,
+                  300 - np.cos(np.pi/6)*210, 300 - np.sin(np.pi/6)*210,
+                  width=1, fill='white')
+    a = datetime.datetime.now()
+    b = a.second
+    d = a.minute
+    g = a.hour
+    x_1 = 300 + np.cos(np.pi/30*b - np.pi/2)*210
+    y_1 = 300 + np.sin(np.pi/30*b - np.pi/2)*210
+    x_2 = 300 + np.cos(np.pi/30*d + np.pi/1800*b - np.pi/2)*190
+    y_2 = 300 + np.sin(np.pi/30*d + np.pi/1800*b - np.pi/2)*190
+    x_3 = 300 + np.cos(np.pi/6*g + np.pi/1800*d - np.pi/2)*150
+    y_3 = 300 + np.sin(np.pi/6*g + np.pi/1800*d - np.pi/2)*150
+    while True:
+        second_hand = c.create_line(300, 300, x_1, y_1, fill='green', width=2)
+        minute_hand = c.create_line(300, 300, x_2, y_2, fill='green', width=4)
+        hour_hand = c.create_line(300, 300, x_3, y_3, fill='green', width=6)
+        window.update()
+        c.delete(second_hand, minute_hand, hour_hand)
+        a = datetime.datetime.now()
+        b = a.second + 2
+        d = a.minute
+        g = a.hour
+        e = np.pi/30*b - np.pi/2
+        f = np.pi/30*d + np.pi/1800*b - np.pi/2
+        h = np.pi/6*g + np.pi/1800*d - np.pi/2
+        x_1 = 300 + np.cos(e)*210
+        y_1 = 300 + np.sin(e)*210
+        x_2 = 300 + np.cos(f)*190
+        y_2 = 300 + np.sin(f)*190
+        x_3 = 300 + np.cos(h) * 150
+        y_3 = 300 + np.sin(h) * 150
+
+
+def task_45():
+    window = Tk()
+    c = Canvas()
+    c.grid()
+    x = [100, 100, 200]
+    y = [100, 200, 200]
+    c.create_polygon(x[0], y[0], x[1], y[1], x[2], y[2], fill='white', outline='black')
+    x1 = [i for i in x]
+    y1 = [i for i in y]
+    y_1 = min(y1)
+    del y1[y1.index(y_1)]
+    y_2 = min(y1)
+    del y1[y1.index(y_2)]
+
+    window.mainloop()
+
+
+def task_49():
+    n = int(input())
+    m = int(input())
+    c = []
+    fil = []
+    for i in range(n):
+        c = []
+        for j in range(m):
+            c += [random.randint(0, 1)]
+        fil.append(c)
+    b = []
+    '''fil = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+           [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+           [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+           [1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]'''
+    window = Tk()
+    for i in range(len(fil)):
+        for j in range(len(fil[0])):
+            if fil[i][j] == 0:
+                b += [Label(background='black', width=5, height=2)]
+            else:
+                b += [Label(background='white', width=5, height=2)]
+            b[-1].grid(column=j, row=i)
+    window.update()
+    while True:
+        a = []
+        for i in range(len(fil)):
+            for j in range(len(fil[0])):
+                if fil[i][j] == 0 and fil[(i + 1) % len(fil)][j] + fil[i - 1][j] + fil[i][j-1] + fil[i][(j + 1) % len(fil[0])] + fil[(i + 1) % len(fil)][j - 1] + fil[(i + 1) % len(fil)][(j + 1) % len(fil[0])] + fil[i - 1][j - 1] + fil[i - 1][(j + 1) % len(fil[0])] == 3:
+                    a += [f'{i}{j}{1}']
+                elif fil[i][j] == 1 and 1 < fil[(i + 1) % len(fil)][j] + \
+                        fil[i - 1][j] + fil[i][j-1] + fil[i][(j+1) % len(fil[0])] + \
+                        fil[(i + 1) % len(fil)][j - 1] + fil[(i + 1) % len(fil)][(j + 1) % len(fil[0])] + \
+                        fil[i - 1][j - 1] + fil[i - 1][(j + 1) % len(fil[0])] < 4:
+                    a += [f'{i}{j}{1}']
+                else:
+                    a += [f'{i}{j}{0}']
+        for i in range(len(a)):
+            fil[int(a[i][0])][int(a[i][1])] = int(a[i][2])
+        for i in range(len(fil)):
+            for j in range(len(fil[0])):
+                if fil[i][j] == 0:
+                    b[j + len(fil[0])*i]['background'] = 'black'
+                else:
+                    b[j + len(fil[0])*i]['background'] = 'white'
+        window.update()
+        time.sleep(0.1)
+
+
+if __name__ == '__main__':
+    task_45()
