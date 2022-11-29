@@ -8,10 +8,7 @@ def fractal(c, n, x1, y1, r, a, m):
         if a % 2 == 0:
             b = list(range(a))
             if n != f:
-                try:
-                    del b[b.index(a/2)]
-                except:
-                    print(f'Хуйня, переделывай')
+                del b[b.index(a/2)]
             for i in b:
                 c.create_line(x1, y1, x1 + r*cos(2*pi*i/a + m), y1 + r*sin(2*pi*i/a + m))
                 fractal(c, n - 1, x1 + r*cos(2*pi*i/a + m), y1 + r*sin(2*pi*i/a + m), r/2, a, 2*pi*i/a + m)
