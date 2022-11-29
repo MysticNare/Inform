@@ -1,0 +1,34 @@
+from tkinter import *
+
+
+def fractal(c, n, x1, y1, x4, y4):
+    if n != 0:
+        r = (x4 - x1)/3
+        c.create_rectangle(x1/2 + x4/2 - r/2, y1/2 + y4/2 - r/2, x1/2 + x4/2 + r/2, y1/2 + y4/2 + r/2)
+        # c.create_line(x1, y1, x2, y2)
+        # c.create_line(x1, y1, x3, y3)
+        # c.create_line(x2, y2, x3, y3)
+        fractal(c, n - 1, x1, y1, x1 + r, y1 + r)
+        fractal(c, n - 1, x1 + r, y1, x1 + r + r, y1 + r)
+        fractal(c, n - 1, x1 + 2*r, y1,  x1 + 2*r + r, y1 + r)
+        fractal(c, n - 1, x1, y1 + r, x1 + r, y1 + r + r)
+        fractal(c, n - 1, x1, y1 + 2*r, x1 + r, y1 + 2*r + r)
+        fractal(c, n - 1, x1 + 2*r, y1 + r, x1 + 2*r + r, y1 + r + r)
+        fractal(c, n - 1, x1 + 2*r, y1 + 2*r, x1 + 2*r + r, y1 + 2*r + r)
+        fractal(c, n - 1, x1 + r, y1 + 2*r, x1 + r + r, y1 + 2*r + r)
+    else:
+        return 0
+
+
+def task_52():
+    # n = int(input())
+    n = 5
+    window = Tk()
+    c = Canvas(width=650, height=650)
+    c.grid()
+    fractal(c, n, 10, 10, 510, 510)
+    window.mainloop()
+
+
+if __name__ == '__main__':
+    task_52()
