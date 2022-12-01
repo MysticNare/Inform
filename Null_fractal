@@ -8,15 +8,25 @@ def fractal(c, n, x1, y1, r, a, m):
         if a % 2 == 0:
             b = list(range(a))
             if n != f:
-                del b[b.index(a/2)]
+                del b[b.index(a/2 - 1):b.index(b[-1])]
             for i in b:
                 c.create_line(x1, y1, x1 + r*cos(2*pi*i/a + m), y1 + r*sin(2*pi*i/a + m))
-                fractal(c, n - 1, x1 + r*cos(2*pi*i/a + m), y1 + r*sin(2*pi*i/a + m), r/2, a, 2*pi*i/a + m)
-
+                fractal(c, n - 1, x1 + r*cos(2*pi*i/a + m), y1 + r*sin(2*pi*i/a + m), r*0.5, a, 2*pi*i/a + m)
         else:
-            for i in range(a):
-                c.create_line(x1, y1, x1 + r*cos(2*pi*i/a + m), y1 + r*sin(2*pi*i/a + m))
-                fractal(c, n - 1, x1 + r*cos(2*pi*i/a + m), y1 + r*sin(2*pi*i/a + m), r/2, a, 2*pi*i/a + m)
+            if n == f:
+                for i in range(a):
+                    c.create_line(x1, y1, x1 + r * cos(2 * pi * i / a + m), y1 + r * sin(2 * pi * i / a + m))
+                    fractal(c, n - 1, x1 + r * cos(2 * pi * i / a + m), y1 + r * sin(2 * pi * i / a + m), r * 0.5, a,
+                            2 * pi * i / a + m)
+            else:
+                if n % 2 == 1:
+                    for i in range(a//2, a - a//2 + 1):
+                        c.create_line(x1, y1, x1 - r*cos(2*pi*i/a + m), y1 - r*sin(2*pi*i/a + m))
+                        fractal(c, n - 1, x1 - r*cos(2*pi*i/a + m), y1 - r*sin(2*pi*i/a + m), r*0.5, a, 2*pi*i/a + m)
+                else:
+                    for i in range(a//2, a - a//2 + 1):
+                        c.create_line(x1, y1, x1 + r*cos(2*pi*i/a + m), y1 + r*sin(2*pi*i/a + m))
+                        fractal(c, n - 1, x1 + r*cos(2*pi*i/a + m), y1 + r*sin(2*pi*i/a + m), r*0.5, a, 2*pi*i/a + m)
     else:
         return 0
 
@@ -28,7 +38,7 @@ def task_50():
     n = f
     point = 3 # количество отрезков
     window = Tk()
-    c = Canvas(width=650, height=650)
+    c = Canvas(window, width=650, height=650)
     c.grid()
     fractal(c, n, 250, 250, 100, point, 0)
     window.mainloop()
